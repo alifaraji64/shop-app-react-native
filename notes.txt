@@ -1,0 +1,20 @@
+Clipping Behavior:
+When you apply borderRadius to a component,
+the content inside the component is clipped according
+ to the rounded corners.
+ However, if the content exceeds the boundaries
+  (like child elements or text that overflows),
+ it may still appear outside the rounded corners.
+
+The overflow: 'hidden' style is used to ensure that
+ any content that goes beyond the component's
+  boundary is clipped (hidden) and not rendered
+   outside the rounded corners.
+
+__________________________________________
+The asChild prop tells the Link to render its
+child as
+the clickable element, inheriting the functionality
+ (like navigation)
+without altering its structure or styling.
+__________________________________________

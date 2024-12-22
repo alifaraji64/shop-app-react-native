@@ -2,7 +2,9 @@ import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList } 
 import { FontAwesome } from '@expo/vector-icons'
 import { Link } from 'expo-router'
 import { CATEGORIES } from '../../assets/categories'
+import { useCartStore } from '../store/cart-store'
 export default function ListHeader() {
+    const {getItemCount} = useCartStore()
     return (
 
         <View>
@@ -24,6 +26,9 @@ export default function ListHeader() {
                                         color='gray'
                                         style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                                     />
+                                    <View style={styles.badgeContainer}>
+                                        <Text style={styles.badgeText}>{getItemCount()}</Text>
+                                    </View>
                                 </View>}
                         </Pressable>
                     </Link>
@@ -44,8 +49,8 @@ export default function ListHeader() {
                         <Link asChild
                             href={`/categories/${item.slug}`}>
                             <Pressable style={styles.category}>
-                                <Image style={{width:60,height:60,borderRadius:100}}
-                                 source={{uri:item.imageUrl}} />
+                                <Image style={{ width: 60, height: 60, borderRadius: 100 }}
+                                    source={{ uri: item.imageUrl }} />
                                 <Text>{item.slug}</Text>
                             </Pressable>
                         </Link>
@@ -61,10 +66,10 @@ export default function ListHeader() {
 }
 
 const styles = StyleSheet.create({
-    categoryText:{
-        fontSize:25,
-        fontWeight:700,
-        paddingBottom:5
+    categoryText: {
+        fontSize: 25,
+        fontWeight: 700,
+        paddingBottom: 5
     },
     headerTop: {
         flexDirection: 'row',
@@ -72,7 +77,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     categoriesContainer: {
-        paddingVertical:5
+        paddingVertical: 5
     },
     heroContainer: {
         width: '100%',
@@ -104,7 +109,24 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         overflow: 'scroll'
     },
-    category:{
-        width:100
+    category: {
+        width: 100
+    },
+    badgeContainer: {
+        position: 'absolute',
+        top: -5,
+        right: 10,
+        backgroundColor: '#1BC464',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    badgeText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: 'bold',
     }
+
 })

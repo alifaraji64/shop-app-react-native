@@ -8,7 +8,7 @@ export default function ProductLayout() {
             <Stack.Screen
                 name='[slug]'
                 options={({ navigation }) => ({
-                    headerShown: true, headerLeft: () => (
+                    headerShown: false, headerLeft: () => (
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <Ionicons></Ionicons>
                         </TouchableOpacity>

@@ -18,3 +18,8 @@ the clickable element, inheriting the functionality
  (like navigation)
 without altering its structure or styling.
 __________________________________________
+Folders wrapped in () are used purely for grouping files
+and do not appear in the resulting route paths.
+The files inside the folder are treated as if
+they were in the parent directory.
+__________________________________________

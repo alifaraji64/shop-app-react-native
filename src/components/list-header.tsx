@@ -1,10 +1,16 @@
 import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { Link } from 'expo-router'
+import { Link, Redirect } from 'expo-router'
 import { CATEGORIES } from '../../assets/categories'
 import { useCartStore } from '../store/cart-store'
+import { supabase } from '../lib/supabase'
 export default function ListHeader() {
     const {getItemCount} = useCartStore()
+    const handleSignOut = async()=>{
+
+        const {error} = await supabase.auth.signOut()
+        if(!error) <Redirect href={'/auth'} />
+    }
     return (
 
         <View>
@@ -32,7 +38,7 @@ export default function ListHeader() {
                                 </View>}
                         </Pressable>
                     </Link>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleSignOut}>
                         <FontAwesome name='sign-out' size={25} color='red' />
                     </TouchableOpacity>
                 </View>

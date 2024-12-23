@@ -1,9 +1,20 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
 import { PRODUCTS } from '../../../assets/products'
 import ProductListItem from '../../components/product-list-item'
 import ListHeader from '../../components/list-header'
+import { useAuth } from '../providers/auth-provider'
+import { Redirect } from 'expo-router'
 
 const index = () => {
+  const { session, mounting, user } = useAuth();
+  console.log(mounting);
+
+  if (mounting) return <ActivityIndicator />
+  if (session == null) return <Redirect href={'/auth'} />
+  if(session){
+    console.log(session.user.id);
+
+  }
   return (
     <View>
       <FlatList

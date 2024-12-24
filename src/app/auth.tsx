@@ -38,8 +38,12 @@ export default function Auth() {
 
   const signUp = async (data: zod.infer<typeof AuthSchema>) => {
     const { error } = await supabase.auth.signUp(data)
-    if (error) return toast.show(error.message,
+    if (error) {
+      console.log(error);
+
+      return toast.show(error.message,
       { type: 'warning', placement: 'top' })
+    }
     return toast.show('signed up successfully',
       { type: 'success', placement: 'top' }
     )

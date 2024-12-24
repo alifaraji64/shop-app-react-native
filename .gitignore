@@ -2,6 +2,14 @@
 
 # dependencies
 node_modules/
+admin/node_modules
+# next.js
+admin/.next/
+admin/out/
+admin/.env.local
+
+# production
+admin/build
 
 # Expo
 .expo/

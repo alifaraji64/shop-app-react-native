@@ -22,24 +22,26 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     useEffect(() => {
         const fetchSession = async () => {
             const { data: { session }, error } = await supabase.auth.getSession();
-            setSession(session)
-            // if (session) {
-            //     const { data: user, error } = await supabase
-            //         .from('users')
-            //         .select('*')
-            //         .eq('id', session.user.id)
-            //         .single()
+            if (session) {
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single()
 
-            //     if (error) {
-            //         console.log(error);
-            //         return;
-            //     }
-            //     setUser(user)
-            // }
+                if (error) {
+                    console.log(error);
+                    return;
+                }
+                console.log('user');
+                console.log(user);
+                setUser(user)
+            }
             setMounting(false)
         }
         fetchSession();
-        supabase.auth.onAuthStateChange((_, session) => {
+        supabase.auth.onAuthStateChange((event, session) => {
+
             setSession(session)
         })
     }, [])

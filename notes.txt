@@ -23,3 +23,12 @@ and do not appear in the resulting route paths.
 The files inside the folder are treated as if
 they were in the parent directory.
 __________________________________________
+
+How Middleware Works
+1-A request is sent to your server (e.g., a user accesses /dashboard).
+2-The request hits the middleware.
+3-Middleware performs its logic (e.g., token validation, redirects).
+4-The middleware decides whether to:
+Allow the request to proceed (NextResponse.next()).
+Redirect the user to another route (NextResponse.redirect()).
+Return a custom response (NextResponse.json() or NextResponse.rewrite()).

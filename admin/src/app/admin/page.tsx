@@ -1,7 +1,9 @@
-import React from 'react'
+'use client'
+import { redirect } from 'next/navigation'
+import React, { useEffect } from 'react'
 
 export default function Admin() {
-  return (
-    <div>admin</div>
-  )
+  useEffect(() => {
+    redirect('/admin/dashboard')
+  }, [])
 }

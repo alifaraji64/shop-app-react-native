@@ -10,7 +10,9 @@ export const authenticate = async (email: string, password: string) => {
         )
         if(error) throw error;
     } catch (error) {
-        console.log('authentication error: '+error);
+        console.log('authentication error: ');
+        console.log(error);
+
         throw error;
 
     }

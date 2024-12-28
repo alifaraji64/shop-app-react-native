@@ -12,7 +12,7 @@ export type Product = {
 
 export type Category = {
   created_at: string
-  id: string
+  id: number
   name: string
   imageUrl: string
   slug: string

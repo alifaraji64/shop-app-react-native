@@ -1,15 +1,15 @@
-import { getCategories } from '@/actions/getCategories'
-import { Database } from '@/utils/supabase/database.types'
-import { createClient } from '@/utils/supabase/server'
-import React from 'react'
+'use server'
+
+import { getCategories } from "@/actions/category";
+import CategoriesPageComponent from "./page-component";
 
 export default async function Categories() {
     const categories = await getCategories()
-    console.log('categories');
-    console.log(categories);
-
-
+    // console.log('categories');
+    // console.log(categories);
     return (
-        <>Categories</>
+        <>
+            <CategoriesPageComponent categories={categories}></CategoriesPageComponent>
+        </>
     )
 }

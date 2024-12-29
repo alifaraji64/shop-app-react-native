@@ -31,13 +31,15 @@ export const CategoryTableRow = ({
   category,
   setCurrentCategory,
   setIsCreateCategoryModalOpen,
-  //deleteCategoryHandler,
+  deleteCategoryHandler,
 }: {
   category: Category;
   setCurrentCategory: (category: CreateCategorySchema | null) => void;
   setIsCreateCategoryModalOpen: (isOpen: boolean) => void;
-  //deleteCategoryHandler: (id: number) => Promise<void>;
+  deleteCategoryHandler: ({id}: {id:number}) => Promise<void>;
 }) => {
+
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleEditClick = (category: CreateCategorySchema) => {
@@ -52,7 +54,7 @@ export const CategoryTableRow = ({
   };
 
   const handleDelete = async () => {
-    //await deleteCategoryHandler(category.id);
+    await deleteCategoryHandler({id:category.id});
     setIsDeleteDialogOpen(false);
   };
 

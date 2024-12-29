@@ -27,18 +27,9 @@ export const CategoryForm = ({
   const isSubmitting = form.formState.isSubmitting;
 
   useEffect(() => {
-
-    console.log('default values');
-
-    console.log(defaultValues);
-
     if (defaultValues) {
-        console.log(2);
-
       form.reset(defaultValues);
     } else {
-        console.log(1);
-
       form.reset({ name: '', image: undefined });
     }
   }, [defaultValues, form]);

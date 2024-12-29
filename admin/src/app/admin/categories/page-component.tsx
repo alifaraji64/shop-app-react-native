@@ -1,5 +1,5 @@
 'use client'
-import { getCategories, imageUploadHandler } from '@/actions/category'
+import { createCategory, deleteCategory, getCategories, imageUploadHandler, updateCategory } from '@/actions/category'
 import { Database } from '@/utils/supabase/database.types'
 import { createClient } from '@/utils/supabase/server'
 import React, { useState } from 'react'
@@ -33,7 +33,7 @@ import {
 
 import { CategoryTableRow } from '@/components/custom/category';
 import { CategoryForm } from '@/app/admin/categories/category-form';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { createCategorySchema, CreateCategorySchema } from './create-category-schema';
 import { Category } from '@/utils/types/types';
@@ -41,29 +41,72 @@ import { Category } from '@/utils/types/types';
 
 type props = { categories: Category[] };
 const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
-  //console.log('categories');
-  //console.log(categories);
+  const router = useRouter();
   const validImageTypes = ['image/png', 'image/jpeg'];
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
-  const [CurrentCategory, setCurrentCategory] = useState<CreateCategorySchema | null>(null)
+  const [currentCategory, setCurrentCategory] = useState<CreateCategorySchema | null>(null)
   const form = useForm({
     resolver: zodResolver(createCategorySchema),
-    defaultValues: { name: 'bang', image: undefined }
+    defaultValues: { name: '', image: undefined }
   })
+
+  const handleImageUpload = async (data: CreateCategorySchema): Promise<string | undefined> => {
+    const uniqueId = uuid();
+    const fileName = `category/category-${uniqueId}`;
+    console.log(data.image[0].type);
+    if (!validImageTypes.includes(data.image[0].type))
+      toast.warning('only JPEG and PNG types are valid')
+    const file = new File([data.image[0]], fileName);
+    const formData = new FormData();
+    formData.append('file', file);
+    return (imageUploadHandler(formData))!
+  }
   const submitCategoryHandler: SubmitHandler<CreateCategorySchema> =
     async (data) => {
+      setCurrentCategory(data)
+      console.log('data');
       console.log(data);
-      const uniqueId = uuid();
-      const fileName = `category/category-${uniqueId}`;
-      console.log(data.image[0].type);
-      if (!validImageTypes.includes(data.image[0].type))
-        return toast.warning('only JPEG and PNG types are valid')
-      const file = new File([data.image[0]], fileName);
-      const formData = new FormData();
-      formData.append('file', file);
-      imageUploadHandler(formData)
 
+      console.log('current category');
+      console.log(currentCategory);
+
+
+      switch (data.intent) {
+        case 'create': {
+          const imageUrl = await handleImageUpload(data)
+          if (!imageUrl) return;
+          await createCategory({ imageUrl, name: data.name });
+          form.reset();
+          router.refresh();
+          setIsCategoryModalOpen(false);
+          toast.success('Category created successfully');
+          break;
+        }
+        case 'update': {
+          const imageUrl = await handleImageUpload(data)
+          if (!imageUrl) return;
+          await updateCategory({
+            imageUrl,
+            name: data.name,
+            slug: data.slug!,
+            intent: 'update'
+          });
+          form.reset();
+          router.refresh();
+          setIsCategoryModalOpen(false);
+          toast.success('Category updated successfully');
+          break;
+        }
+        default: console.log('Invalid intent');
+
+      }
     }
+
+  const handleDelete = async ({ id }: { id: number }) => {
+    await deleteCategory({ id });
+    router.refresh();
+    toast.success('category deleted successfully')
+  }
 
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
@@ -74,7 +117,13 @@ const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
             onOpenChange={() => setIsCategoryModalOpen(!isCategoryModalOpen)}>
             <DialogTrigger asChild>
               <Button size={'sm'} className='h-8 gap-1' onClick={() => {
-                setCurrentCategory(null);
+                setCurrentCategory({
+                  name: '',
+                  // @ts-ignore
+                  image: new File([], ''),
+                  intent: 'create',
+                  slug: '',
+                });
                 setIsCategoryModalOpen(true)
               }}>
                 <PlusCircle className='h-3.5 w-3.5' />
@@ -88,7 +137,7 @@ const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
               <CategoryForm
                 form={form}
                 onSubmit={submitCategoryHandler}
-                defaultValues={CurrentCategory} />
+                defaultValues={currentCategory} />
             </DialogContent>
           </Dialog>
         </div>
@@ -119,6 +168,7 @@ const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
             <TableBody>
               {categories.map(category =>
                 <CategoryTableRow
+                deleteCategoryHandler={handleDelete}
                   key={category.id}
                   setCurrentCategory={setCurrentCategory}
                   category={category}

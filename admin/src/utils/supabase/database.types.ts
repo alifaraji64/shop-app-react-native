@@ -13,7 +13,7 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          image_url: string
+          imageUrl: string
           name: string
           products: number[] | null
           slug: string
@@ -21,7 +21,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: number
-          image_url: string
+          imageUrl: string
           name: string
           products?: number[] | null
           slug: string
@@ -29,12 +29,56 @@ export type Database = {
         Update: {
           created_at?: string
           id?: number
-          image_url?: string
+          imageUrl?: string
           name?: string
           products?: number[] | null
           slug?: string
         }
         Relationships: []
+      }
+      product: {
+        Row: {
+          category: number
+          created_at: string
+          heroImage: string
+          id: number
+          imagesUrl: string[]
+          maxQty: number
+          price: number
+          slug: string
+          title: string
+        }
+        Insert: {
+          category: number
+          created_at?: string
+          heroImage: string
+          id?: number
+          imagesUrl: string[]
+          maxQty: number
+          price: number
+          slug: string
+          title: string
+        }
+        Update: {
+          category?: number
+          created_at?: string
+          heroImage?: string
+          id?: number
+          imagesUrl?: string[]
+          maxQty?: number
+          price?: number
+          slug?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_category_fkey"
+            columns: ["category"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {

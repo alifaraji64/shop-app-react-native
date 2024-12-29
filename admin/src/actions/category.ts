@@ -1,8 +1,15 @@
 'use server'
+import {
+  CreateCategorySchema,
+  CreateCategorySchemaServer,
+  UpdateCategorySchema
+} from '@/app/admin/categories/create-category-schema'
 import { createClient } from '@/utils/supabase/server'
 import { Category } from '@/utils/types/types'
-const supabase = await createClient()
+import slugify from 'slugify'
+
 export const getCategories = async (): Promise<Category[]> => {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -12,6 +19,7 @@ export const getCategories = async (): Promise<Category[]> => {
 }
 
 export const imageUploadHandler = async (formData: FormData) => {
+  const supabase = await createClient()
   if (!formData) return
   const fileEntry = formData.get('file')
   if (!(fileEntry instanceof File)) throw new Error('expected a file')
@@ -33,4 +41,45 @@ export const imageUploadHandler = async (formData: FormData) => {
     console.log('error uploading image: ' + error)
     throw new Error('Error uploading image')
   }
+}
+
+export const createCategory = async ({
+  imageUrl,
+  name
+}: CreateCategorySchemaServer) => {
+  const supabase = await createClient()
+  const slug = slugify(name)
+  const { data, error } = await supabase
+    .from('categories')
+    .insert({ imageUrl, name, slug })
+  if (error) {
+    console.log(error);
+
+    throw new Error('error creating category:' + error)
+  }
+  return data
+}
+
+export const updateCategory = async ({
+  imageUrl,
+  name,
+  slug
+}: UpdateCategorySchema) => {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('categories')
+    .update({ name, imageUrl })
+    .match({ slug })
+  if (error) throw new Error('error updating category: ' + error)
+  return data
+}
+
+export const deleteCategory = async ({ id }: { id: number }) => {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('categories')
+    .delete()
+    .match({ id })
+    if(error) throw new Error('error deleting category: ' + error)
+
 }

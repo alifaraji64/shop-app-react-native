@@ -16,5 +16,5 @@ export type Category = {
   name: string
   imageUrl: string
   slug: string
-  products: Product[]
+  products: Product[] | null
 }

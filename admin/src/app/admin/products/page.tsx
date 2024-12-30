@@ -1,7 +1,12 @@
 import { getCategories } from '@/actions/category'
 import React from 'react'
-export default function Product() {
+import ProductPageComponent from './page-component';
+import { Category } from '@/utils/types/types';
+export default async function Product() {
+  const categories: Category[] = await getCategories();
   return (
-    <div>Product</div>
+    <>
+      <ProductPageComponent categories={categories} />
+    </>
   )
 }

@@ -6,6 +6,15 @@ export type Product = {
   imagesUrl: string[]
   price: number
   heroImage: string
+  category: Category
+  maxQuantity: number
+}
+export type ProductUpdate = {
+  title: string
+  slug: string | undefined
+  imagesUrl: string[]
+  price: number
+  heroImage: string
   category: number
   maxQuantity: number
 }
@@ -18,3 +27,4 @@ export type Category = {
   slug: string
   products: Product[] | null
 }
+export const validImageTypes = ['image/png', 'image/jpeg']

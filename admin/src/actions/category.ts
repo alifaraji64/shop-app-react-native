@@ -3,7 +3,7 @@ import {
   CreateCategorySchema,
   CreateCategorySchemaServer,
   UpdateCategorySchema
-} from '@/app/admin/categories/create-category-schema'
+} from '@/app/admin/categories/schema'
 import { createClient } from '@/utils/supabase/server'
 import { Category } from '@/utils/types/types'
 import slugify from 'slugify'
@@ -18,9 +18,8 @@ export const getCategories = async (): Promise<Category[]> => {
   return data || []
 }
 
-export const imageUploadHandler = async (formData: FormData) => {
+export const imageUploadHandler = async (formData: FormData):Promise<string> => {
   const supabase = await createClient()
-  if (!formData) return
   const fileEntry = formData.get('file')
   if (!(fileEntry instanceof File)) throw new Error('expected a file')
   const fileName = fileEntry.name

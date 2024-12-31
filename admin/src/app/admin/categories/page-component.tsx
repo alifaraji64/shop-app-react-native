@@ -31,18 +31,17 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { CategoryTableRow } from '@/components/custom/category';
+import { CategoryTableRow } from '@/app/admin/categories/category-table-row';
 import { CategoryForm } from '@/app/admin/categories/category-form';
 import { redirect, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { createCategorySchema, CreateCategorySchema } from './create-category-schema';
-import { Category } from '@/utils/types/types';
+import { createCategorySchema, CreateCategorySchema } from './schema';
+import { Category, validImageTypes } from '@/utils/types/types';
 
 
 type props = { categories: Category[] };
 const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
   const router = useRouter();
-  const validImageTypes = ['image/png', 'image/jpeg'];
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
   const [currentCategory, setCurrentCategory] = useState<CreateCategorySchema | null>(null)
   const form = useForm({
@@ -50,13 +49,13 @@ const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
     defaultValues: { name: '', image: undefined }
   })
 
-  const handleImageUpload = async (data: CreateCategorySchema): Promise<string | undefined> => {
+  const handleImageUpload =
+  async (data: File[]): Promise<string | undefined> => {
     const uniqueId = uuid();
     const fileName = `category/category-${uniqueId}`;
-    console.log(data.image[0].type);
-    if (!validImageTypes.includes(data.image[0].type))
+    if (!validImageTypes.includes(data[0].type))
       toast.warning('only JPEG and PNG types are valid')
-    const file = new File([data.image[0]], fileName);
+    const file = new File([data[0]], fileName);
     const formData = new FormData();
     formData.append('file', file);
     return (imageUploadHandler(formData))!
@@ -73,7 +72,7 @@ const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
 
       switch (data.intent) {
         case 'create': {
-          const imageUrl = await handleImageUpload(data)
+          const imageUrl = await handleImageUpload(data.image)
           if (!imageUrl) return;
           await createCategory({ imageUrl, name: data.name });
           form.reset();
@@ -83,7 +82,7 @@ const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
           break;
         }
         case 'update': {
-          const imageUrl = await handleImageUpload(data)
+          const imageUrl = await handleImageUpload(data.image)
           if (!imageUrl) return;
           await updateCategory({
             imageUrl,

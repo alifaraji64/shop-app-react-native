@@ -7,7 +7,7 @@ export type Product = {
   price: number
   heroImage: string
   category: Category
-  maxQuantity: number
+  maxQty: number
 }
 export type ProductUpdate = {
   title: string

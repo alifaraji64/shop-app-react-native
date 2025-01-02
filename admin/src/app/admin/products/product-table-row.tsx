@@ -36,12 +36,13 @@ export const ProductTableRow = ({
     setIsProductModalOpen(true);
   };
 
+
   return (
-    <TableRow key={product.id}>
+    <TableRow key={product.id} className='min-w-[700px] flex justify-between'>
       <TableCell>{product.title}</TableCell>
       <TableCell>{product.category.name}</TableCell>
       <TableCell>{product.price}</TableCell>
-      <TableCell>{product.maxQuantity}</TableCell>
+      <TableCell>{product.maxQty}</TableCell>
       <TableCell>
         {product.heroImage && (
           <Image
@@ -49,7 +50,7 @@ export const ProductTableRow = ({
             height={40}
             src={product.heroImage}
             alt='Hero'
-            className='w-10 h-10 object-cover'
+            className='w-10 h-10 object-cover '
           />
         )}
       </TableCell>
@@ -61,7 +62,7 @@ export const ProductTableRow = ({
             key={index}
             src={url}
             alt={`Product ${index + 1}`}
-            className='w-10 h-10 object-cover inline-block mr-1'
+            className='w-10 h-10 object-cover inline-block mr-1 mx-auto'
           />
         ))}
       </TableCell>
@@ -74,7 +75,7 @@ export const ProductTableRow = ({
               title: product.title,
               category: product.category.id.toString(),
               price: product.price?.toString() ?? '',
-              maxQuantity: product.maxQuantity.toString(),
+              maxQuantity: product.maxQty.toString(),
               images: [],
               slug: product.slug,
               intent: 'update',
@@ -86,16 +87,19 @@ export const ProductTableRow = ({
         <Button
           variant='ghost'
           size='icon'
-          onClick={() =>
+          onClick={() => {
             setCurrentProduct({
               title: product.title,
               category: product.category.id.toString(),
               price: product.price?.toString() ?? '',
-              maxQuantity: product.maxQuantity.toString(),
+              maxQuantity: product.maxQty.toString(),
               images: [],
               slug: product.slug,
               intent: 'update',
+              id: product.id
             })
+            setIsDeleteModalOpen(true)
+          }
           }
         >
           <Trash2

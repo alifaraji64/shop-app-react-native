@@ -82,7 +82,7 @@ const CategoriesPageComponent: React.FC<props> = ({ categories }) => {
           break;
         }
         case 'update': {
-          const imageUrl = await handleImageUpload(data.image)
+          const imageUrl:any = await handleImageUpload(data.image)
           if (!imageUrl) return;
           await updateCategory({
             imageUrl,

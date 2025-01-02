@@ -5,6 +5,16 @@ import { createClient } from '@/utils/supabase/server'
 import slugify from 'slugify'
 import { CreateProductSchemaServer } from '@/app/admin/products/schema'
 
+export const getCategoriesOnlyName = async (): Promise<string[]> => {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('categories')
+    .select('name')
+    .returns<string[]>()
+  if (error) throw new Error('error fetching categories:' + error)
+  return data || []
+}
+
 export const getProductsWithCategories = async (): Promise<Product[]> => {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -69,6 +79,10 @@ export const updateProduct = async ({
 export const deleteProduct = async (id: number) => {
   const supabase = await createClient()
   const { data, error } = await supabase.from('product').delete().match({ id })
-  if (error) throw new Error('error deleting product' + error)
+  if (error) {
+    console.log(error)
+
+    throw new Error('error deleting product' + error)
+  }
   return data
 }

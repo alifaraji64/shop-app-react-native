@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { SubmitHandler, UseFormReturn } from 'react-hook-form';
 
 import {
   Form,
@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/dialog';
 import { CreateOrUpdateProductSchema } from '@/app/admin/products/schema';
 import { Input } from '@/components/ui/input';
-import { Category } from '@/utils/types/types';
+import { Category, Product } from '@/utils/types/types';
 import { Button } from '@/components/ui/button';
 
 
@@ -39,7 +39,7 @@ export const ProductForm = ({
   defaultValues,
 }: {
   form: UseFormReturn<CreateOrUpdateProductSchema>;
-  onSubmit: (data: CreateOrUpdateProductSchema) => void;
+  onSubmit: SubmitHandler<CreateOrUpdateProductSchema>
   categories: Category[];
   setIsProductModalOpen: Dispatch<SetStateAction<boolean>>;
   isProductModalOpen: boolean;
@@ -49,6 +49,8 @@ export const ProductForm = ({
 
   useEffect(() => {
     if (defaultValues) {
+      console.log(defaultValues);
+
       form.reset(defaultValues);
     } else {
       form.reset({
@@ -58,16 +60,17 @@ export const ProductForm = ({
         maxQuantity: '',
         heroImage: undefined,
         images: undefined,
+        intent: 'create'
       });
     }
-  }, [defaultValues, form]);
+  }, [defaultValues,form]);
 
   return (
     <Dialog open={isProductModalOpen} onOpenChange={setIsProductModalOpen}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
-        </DialogHeader>
+        <DialogTitle>
+          Add New Product
+        </DialogTitle>
         <div
           className='max-h-[calc(100svh-200px)] overflow-y-auto'
           style={{
@@ -212,7 +215,7 @@ export const ProductForm = ({
 
               <DialogFooter>
                 <Button disabled={isSubmitting} type='submit'>
-                  Add Product
+                  Add Productt
                 </Button>
               </DialogFooter>
             </form>

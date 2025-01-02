@@ -1,5 +1,6 @@
 import { z } from 'zod'
 export const createOrUpdateProductSchema = z.object({
+  id:z.number().optional(),
   title: z.string().min(1, { message: 'Title is required' }),
   price: z.string().min(1, { message: 'price is required' }),
   maxQuantity: z.string().min(1, { message: 'maxQuantity is required' }),
@@ -15,8 +16,7 @@ export const createOrUpdateProductSchema = z.object({
   intent: z
     .enum(['create', 'update'], {
       message: 'Intent must be either create or update'
-    })
-    .optional(),
+    }),
   slug: z.string().optional()
 })
 

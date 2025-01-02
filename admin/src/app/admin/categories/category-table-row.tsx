@@ -38,6 +38,7 @@ export const CategoryTableRow = ({
   setIsCreateCategoryModalOpen: (isOpen: boolean) => void;
   deleteCategoryHandler: ({id}: {id:number}) => Promise<void>;
 }) => {
+console.log(category);
 
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -104,7 +105,7 @@ export const CategoryTableRow = ({
                             {product.title}
                           </h3>
                           <p className='text-sm text-muted-foreground'>
-                            {product.maxQuantity} in stock
+                            {product.maxQty} in stock
                           </p>
                         </div>
                       </div>

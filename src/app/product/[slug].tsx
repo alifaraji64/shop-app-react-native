@@ -4,10 +4,13 @@ import { useToast } from 'react-native-toast-notifications';
 import { PRODUCTS } from '../../../assets/products';
 import { useCartStore } from '../../store/cart-store';
 import { useState } from 'react';
+import { useProductStore } from '../../store/product';
 
 export default function ProductDetails() {
     const { slug } = useLocalSearchParams<{ slug: string }>();
     const toast = useToast();
+
+
     const product = PRODUCTS.find(p => p.slug === slug);
     if (!product) return <Redirect href={'/404'} />
 
@@ -18,7 +21,7 @@ export default function ProductDetails() {
     const [qty, setQty] = useState(cartItem ? cartItem.qty : 1);
     const totalPrice = (product.price * qty).toFixed(2)
     const increaseQty = () => {
-        if (qty < product.maxQuantity) setQty(qty + 1)
+        if (qty < product.maxQty) setQty(qty + 1)
         else
             toast.show('we are out of stock for this amount',
                 { type: 'warning', placement: 'top' }
@@ -86,9 +89,9 @@ export default function ProductDetails() {
                     <TouchableOpacity
                         style={[
                             styles.quantityButton,
-                            { opacity: qty >= product.maxQuantity ? 0.5 : 1 }
+                            { opacity: qty >= product.maxQty ? 0.5 : 1 }
                         ]}
-                        disabled={qty >= product.maxQuantity}
+                        disabled={qty >= product.maxQty}
                         onPress={increaseQty}
                     >
                         <Text style={styles.quantityButtonText}>+</Text>

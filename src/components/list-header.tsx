@@ -1,15 +1,24 @@
-import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { Link, Redirect } from 'expo-router'
+import { useToast } from 'react-native-toast-notifications';
 import { CATEGORIES } from '../../assets/categories'
 import { useCartStore } from '../store/cart-store'
 import { supabase } from '../lib/supabase'
+import { getProductsAndCategories } from '../actions/category'
+import { Tables } from '../types/supabase.types';
 export default function ListHeader() {
-    const {getItemCount} = useCartStore()
-    const handleSignOut = async()=>{
+    const toast = useToast();
+    const { data, error, isLoading } = getProductsAndCategories();
+    if (isLoading) return <ActivityIndicator />
+    if (!data || error) return toast.show('error while fetching the categories',
+        { type: 'warning', placement: 'top' }
+    )
+    const { getItemCount } = useCartStore()
+    const handleSignOut = async () => {
 
-        const {error} = await supabase.auth.signOut()
-        if(!error) <Redirect href={'/auth'} />
+        const { error } = await supabase.auth.signOut()
+        if (!error) <Redirect href={'/auth'} />
     }
     return (
 
@@ -50,7 +59,7 @@ export default function ListHeader() {
             <View style={styles.categoriesContainer}>
                 <Text style={styles.categoryText}>Categories</Text>
                 <FlatList
-                    data={CATEGORIES}
+                    data={data.categories as Tables<'categories'>[]}
                     renderItem={({ item }) => (
                         <Link asChild
                             href={`/categories/${item.slug}`}>
@@ -64,7 +73,9 @@ export default function ListHeader() {
                     keyExtractor={item => item.name}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.flatListContent}></FlatList>
+                    contentContainerStyle={styles.flatListContent}>
+
+                </FlatList>
             </View>
         </View>
 

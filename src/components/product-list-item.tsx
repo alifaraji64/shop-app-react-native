@@ -1,17 +1,19 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
-import { Product } from '../../assets/types/product';
-import { Link } from 'expo-router';
 
-const ProductListItem: React.FC<{ product: Product }> = ({ product }) => {
+import { Link } from 'expo-router';
+import { Tables } from '../types/supabase.types';
+
+const ProductListItem: React.FC<{ product: Tables<'product'> }> = ({ product }) => {
+
     return (
-        <Link asChild href={`/product/${product.slug}`}>
+        <Link asChild href={`/product/${product.slug}`} >
             <Pressable style={styles.item}>
                 <View style={styles.itemImageContainer}>
-                    <Image source={product.heroImage} style={styles.itemImage} />
+                    <Image source={{ uri: product.heroImage}} style={styles.itemImage} />
                 </View>
                 <View style={styles.itemTextContainer}>
                     <Text style={styles.itemTitle}>{product.title}</Text>
-                    <Text style={styles.itemPrice}>${product.price.toFixed(2)}</Text>
+                    <Text style={styles.itemPrice}>${product.price}</Text>
                 </View>
             </Pressable>
         </Link>
@@ -34,8 +36,8 @@ const styles = StyleSheet.create({
         height: 150
     },
     itemImage: {
-        maxWidth: '100%',
-        maxHeight: '100%',
+        width: '100%',
+       height: '100%',
         resizeMode: 'cover',
     },
     itemTextContainer: {

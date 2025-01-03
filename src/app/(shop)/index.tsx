@@ -4,21 +4,40 @@ import ProductListItem from '../../components/product-list-item'
 import ListHeader from '../../components/list-header'
 import { useAuth } from '../providers/auth-provider'
 import { Redirect } from 'expo-router'
+import { getProductsAndCategories } from '../../actions/category'
+import { useProductStore } from '../../store/product'
+import { useEffect } from 'react'
 
 const index = () => {
+  const { data, error, isLoading } = getProductsAndCategories()
+
   const { session, mounting, user } = useAuth();
-  console.log(mounting);
+  const { setProducts, products } = useProductStore((state) => ({
+    setProducts: state.setProducts,
+    products: state.storeProducts,
+  }));
 
-  if (mounting) return <ActivityIndicator />
+  // UseEffect for Zustand Store Update
+  useEffect(() => {
+    if (data?.products) {
+      // Only update the Zustand store if the data is different
+      const isDataDifferent = !products || products.length === 0 || !products.every((product, index) => product.id === data.products[index]?.id);
+
+      if (isDataDifferent) {
+        setProducts(data.products);
+      }
+    }
+  }, [data?.products, setProducts, products]);
+
+  if (mounting || isLoading) return <ActivityIndicator />
+  if (error || !data) return <Text>error:{error?.message}</Text>
   if (session == null) return <Redirect href={'/auth'} />
-  if(session){
-    console.log(session.user.id);
 
-  }
+
   return (
     <View>
       <FlatList
-        data={PRODUCTS}
+        data={data?.products || []}
         renderItem={({ item }) => <ProductListItem product={item} ></ProductListItem>}
         keyExtractor={item => item.id.toString()}
         numColumns={2}

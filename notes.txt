@@ -32,3 +32,10 @@ How Middleware Works
 Allow the request to proceed (NextResponse.next()).
 Redirect the user to another route (NextResponse.redirect()).
 Return a custom response (NextResponse.json() or NextResponse.rewrite()).
+__________________________________________
+
+in a foreign-key relationship, the table which we declared the relationship(child table)
+will be fetched while fetching the parent table
+
+The parent naturally "contains" the child when querying because it's the referenced entity.
+The child "points to" the parent when querying because it holds the reference.

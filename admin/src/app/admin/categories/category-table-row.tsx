@@ -100,7 +100,7 @@ console.log(category);
                           src={product.heroImage}
                           width='100'
                         />
-                        <div className='flex flex-col space-y-1'>
+                        <div className='flex flex-col space-y-1 border-4 border-white rounded-lg '>
                           <h3 className='font-medium leading-none'>
                             {product.title}
                           </h3>

@@ -1712,6 +1712,18 @@
     "@supabase/realtime-js" "2.11.2"
     "@supabase/storage-js" "2.7.1"
 
+"@tanstack/query-core@5.62.9":
+  version "5.62.9"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.62.9.tgz#94231ffea5de086b5e6c0f1e527cda5650cb1849"
+  integrity sha512-lwePd8hNYhyQ4nM/iRQ+Wz2cDtspGeZZHFZmCzHJ7mfKXt+9S301fULiY2IR2byJYY6Z03T427E5PoVfMexHjw==
+
+"@tanstack/react-query@^5.62.11":
+  version "5.62.11"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.62.11.tgz#95a615a60dc8fd836a5085dea2739a62f4953f55"
+  integrity sha512-Xb1nw0cYMdtFmwkvH9+y5yYFhXvLRCnXoqlzSw7UkqtCVFq3cG8q+rHZ2Yz1XrC+/ysUaTqbLKJqk95mCgC1oQ==
+  dependencies:
+    "@tanstack/query-core" "5.62.9"
+
 "@types/aes-js@^3.1.4":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@types/aes-js/-/aes-js-3.1.4.tgz#90afb62e69b0365a392d2e79579a6f424b772792"
@@ -5874,10 +5886,10 @@ sudo-prompt@^8.2.0:
   resolved "https://registry.yarnpkg.com/sudo-prompt/-/sudo-prompt-8.2.5.tgz#cc5ef3769a134bb94b24a631cc09628d4d53603e"
   integrity sha512-rlBo3HU/1zAJUrkY6jNxDOC9eVYliG6nS4JA8u8KAshITd07tafMc/Br7xQwCSseXwJ2iCcHCE8SNWX3q8Z+kw==
 
-supabase@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/supabase/-/supabase-2.1.1.tgz#540717c26798d5afab87b5597f403d7f80913ccc"
-  integrity sha512-KPP4LrvMmu6IWIcqSOcPbepTGT2Fv05TMiYwbcEaKgCVUznDNtlyXQTImJhjP+8FhNuJ+tF9SLoQgMQqDei+jA==
+supabase@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/supabase/-/supabase-2.2.1.tgz#72dae467ada58115cc26b05b2def31d2ae11b3cc"
+  integrity sha512-uTu8f4kT9wE3EEQTAJAWFlHyu8ymauFxWEz2FDGIQ2MzlD1Xb1NCHtsj/xvmJWqrGI1jnBYcPuatZVTHj1jR1g==
   dependencies:
     bin-links "^5.0.0"
     https-proxy-agent "^7.0.2"

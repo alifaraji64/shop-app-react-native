@@ -9,5 +9,5 @@ export type Product = {
   price: number;
   heroImage: ImageSourcePropType;
   category: Omit<Category, 'products'>;
-  maxQuantity: number;
+  maxQty: number;
 };

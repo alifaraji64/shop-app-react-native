@@ -12,13 +12,20 @@ export const getCategories = async (): Promise<Category[]> => {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('categories')
-    .select('*')
+    .select(
+      `
+      *,
+      products:product(*)
+    `
+    )
     .returns<Category[]>()
   if (error) throw new Error('error fetching categories:' + error)
   return data || []
 }
 
-export const imageUploadHandler = async (formData: FormData):Promise<string> => {
+export const imageUploadHandler = async (
+  formData: FormData
+): Promise<string> => {
   const supabase = await createClient()
   const fileEntry = formData.get('file')
   if (!(fileEntry instanceof File)) throw new Error('expected a file')
@@ -52,7 +59,7 @@ export const createCategory = async ({
     .from('categories')
     .insert({ imageUrl, name, slug })
   if (error) {
-    console.log(error);
+    console.log(error)
 
     throw new Error('error creating category:' + error)
   }
@@ -75,10 +82,6 @@ export const updateCategory = async ({
 
 export const deleteCategory = async ({ id }: { id: number }) => {
   const supabase = await createClient()
-  const { error } = await supabase
-    .from('categories')
-    .delete()
-    .match({ id })
-    if(error) throw new Error('error deleting category: ' + error)
-
+  const { error } = await supabase.from('categories').delete().match({ id })
+  if (error) throw new Error('error deleting category: ' + error)
 }

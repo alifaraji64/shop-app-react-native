@@ -9,9 +9,13 @@ import { useProductStore } from '../../store/product';
 export default function ProductDetails() {
     const { slug } = useLocalSearchParams<{ slug: string }>();
     const toast = useToast();
+    const { getProducts } = useProductStore()
+    const products= getProducts();
+
+    
 
 
-    const product = PRODUCTS.find(p => p.slug === slug);
+    const product = products.find(p => p.slug === slug);
     if (!product) return <Redirect href={'/404'} />
 
     const { items, addItem, incrementItem, decrementItem } = useCartStore()
@@ -54,7 +58,7 @@ export default function ProductDetails() {
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: slug, headerTitleAlign: 'center' }} />
-            <Image style={styles.heroImage} source={product.heroImage} />
+            <Image style={styles.heroImage} source={{uri:product.heroImage}} />
             <View style={{ flex: 1, padding: 12 }}>
                 <Text>Title: {product.title}</Text>
                 <Text>Slug: {slug}</Text>
@@ -65,7 +69,7 @@ export default function ProductDetails() {
                 <FlatList
                     data={product.imagesUrl}
                     renderItem={({ item }) => <Image
-                        source={item}
+                        source={{uri:item}}
                         style={styles.image}
                     />
                     }

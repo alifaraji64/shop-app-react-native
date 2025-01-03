@@ -7,27 +7,33 @@ import { Redirect } from 'expo-router'
 import { getProductsAndCategories } from '../../actions/category'
 import { useProductStore } from '../../store/product'
 import { useEffect } from 'react'
+import { useShallow } from 'zustand/shallow';
 
 const index = () => {
   const { data, error, isLoading } = getProductsAndCategories()
 
   const { session, mounting, user } = useAuth();
-  const { setProducts, products } = useProductStore((state) => ({
-    setProducts: state.setProducts,
-    products: state.storeProducts,
-  }));
-
+  const { setProducts, products } = useProductStore(useShallow(
+    (state) => ({
+      setProducts: state.setProducts,
+      products: state.storeProducts,
+    })) // Use shallow comparison here
+  );
   // UseEffect for Zustand Store Update
   useEffect(() => {
+    console.log(1);
+    
     if (data?.products) {
-      // Only update the Zustand store if the data is different
-      const isDataDifferent = !products || products.length === 0 || !products.every((product, index) => product.id === data.products[index]?.id);
-
-      if (isDataDifferent) {
+      console.log(2);
+      console.log(data.products);
+      
+      
         setProducts(data.products);
-      }
+        console.log(products);
+        
+      
     }
-  }, [data?.products, setProducts, products]);
+  }, []);
 
   if (mounting || isLoading) return <ActivityIndicator />
   if (error || !data) return <Text>error:{error?.message}</Text>

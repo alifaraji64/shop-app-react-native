@@ -12,10 +12,13 @@ export default function ProductDetails() {
     const { getProducts } = useProductStore()
     const products= getProducts();
 
-    
+
 
 
     const product = products.find(p => p.slug === slug);
+    console.log('zz');
+    console.log(products);
+
     if (!product) return <Redirect href={'/404'} />
 
     const { items, addItem, incrementItem, decrementItem } = useCartStore()

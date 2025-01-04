@@ -13,17 +13,19 @@ const index = () => {
   const { data, error, isLoading } = getProductsAndCategories()
 
   const { session, mounting, user } = useAuth();
-  const { setProducts, products, getProducts } = useProductStore(useShallow(
+  const { setProducts, setCategories } = useProductStore(useShallow(
     (state) => ({
       setProducts: state.setProducts,
-      products: state.storeProducts,
-      getProducts: state.getProducts
+      setCategories: state.setCategories
     })) // Use shallow comparison here
   );
   // UseEffect for Zustand Store Update
   useEffect(() => {
-    if (data?.products) setProducts(data.products);
-  }, [data?.products]);
+    if (data?.products && data?.categories) {
+      setProducts(data.products)
+      setCategories(data.categories)
+    }
+  }, [data?.products, data?.categories]);
 
   if (mounting || isLoading) return <ActivityIndicator />
   if (error || !data) return <Text>error:{error?.message}</Text>

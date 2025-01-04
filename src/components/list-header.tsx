@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList, ActivityIndicator, ScrollView } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { Link, Redirect } from 'expo-router'
 import { useToast } from 'react-native-toast-notifications';
@@ -56,27 +56,34 @@ export default function ListHeader() {
             <View style={styles.heroContainer}>
                 <Image style={styles.heroImage} source={require('../../assets/images/hero.png')} />
             </View>
-            <View style={styles.categoriesContainer}>
-                <Text style={styles.categoryText}>Categories</Text>
-                <FlatList
-                    data={data.categories as Tables<'categories'>[]}
-                    renderItem={({ item }) => (
-                        <Link asChild
-                            href={`/categories/${item.slug}`}>
-                            <Pressable style={styles.category}>
-                                <Image style={{ width: 60, height: 60, borderRadius: 100 }}
-                                    source={{ uri: item.imageUrl }} />
-                                <Text>{item.slug}</Text>
-                            </Pressable>
-                        </Link>
-                    )}
-                    keyExtractor={item => item.name}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.flatListContent}>
 
-                </FlatList>
+            <View style={styles.categoriesContainer}>
+                <Text style={styles.categoryText}>Categories {data.categories.length}</Text>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <FlatList
+                        style={{ maxWidth: '220%' }}
+                        data={data.categories as Tables<'categories'>[]}
+                        renderItem={({ item }) => (
+                            <Link asChild
+                                href={`/categories/${item.slug}`} style={{
+
+                                }}>
+                                <Pressable style={styles.category}>
+                                    <Image style={{ width: 50, height: 50, borderRadius: 100 }}
+                                        source={{ uri: item.imageUrl }} />
+                                    <Text>{item.slug}</Text>
+                                </Pressable>
+                            </Link>
+                        )}
+                        keyExtractor={item => item.name}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={true}
+                        contentContainerStyle={styles.flatListContent}>
+
+                    </FlatList>
+                </ScrollView>
             </View>
+
         </View>
 
     )
@@ -94,7 +101,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     categoriesContainer: {
-        paddingVertical: 5
+        paddingVertical: 5,
+        overflow: 'scroll'
     },
     heroContainer: {
         width: '100%',

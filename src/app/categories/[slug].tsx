@@ -3,13 +3,20 @@ import { StyleSheet, Text, View, Image, FlatList } from 'react-native'
 import { CATEGORIES } from '../../../assets/categories';
 import { PRODUCTS } from '../../../assets/products';
 import ProductListItem from '../../components/product-list-item';
+import { useProductStore } from '../../store/product';
 
 export default function Category() {
     const { slug } = useLocalSearchParams<{ slug: string }>();
-    const category = CATEGORIES.find(ctgry => ctgry?.slug == slug)
+    const { getCategories, getProducts } = useProductStore()
+    const categories = getCategories();
+    const products = getProducts();
+
+
+    const category = categories.find(ctgry => ctgry?.slug == slug)
     if (!category)
         return <Redirect href={'/404'} />
-    const products = PRODUCTS.filter(p => p.category.slug === slug)
+    const productsForThisCategory = products.filter(p => p.category === category.id)
+
 
 
     return (
@@ -17,14 +24,15 @@ export default function Category() {
             <Stack.Screen options={{ title: category.name }} />
             <Image source={{ uri: category.imageUrl }} style={styles.categoryImage} />
             <Text style={styles.categoryName}>{category.name}</Text>
-            <FlatList
-                data={products}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => <ProductListItem product={item} />}
-                numColumns={2}
-                columnWrapperStyle={styles.productRow}
-                contentContainerStyle={styles.productsList}
-            />
+            {productsForThisCategory.length ?
+                <FlatList
+                    data={productsForThisCategory}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({ item }) => <ProductListItem product={item} />}
+                    numColumns={2}
+                    columnWrapperStyle={styles.productRow}
+                    contentContainerStyle={styles.productsList}
+                /> : <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',marginTop:18}}>no product in this category</Text>}
         </View>
     )
 }
@@ -49,7 +57,7 @@ const styles = StyleSheet.create({
     },
     productsList: {
         //flexGrow: 1,
-        padding:5
+        padding: 5
     },
     productRow: {
         justifyContent: 'space-between',

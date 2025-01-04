@@ -16,8 +16,6 @@ export default function ProductDetails() {
 
 
     const product = products.find(p => p.slug === slug);
-    console.log('zz');
-    console.log(products);
 
     if (!product) return <Redirect href={'/404'} />
 

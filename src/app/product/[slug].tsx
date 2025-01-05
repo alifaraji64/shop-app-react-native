@@ -43,6 +43,10 @@ export default function ProductDetails() {
     }
 
     const addToCart = () => {
+        console.log('iiii');
+
+        console.log(product.heroImage);
+
         addItem({
             id: product.id,
             image: product.heroImage,

@@ -36,6 +36,83 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: number
+          order_id: number
+          product_id: number
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          order_id: number
+          product_id: number
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          order_id?: number
+          product_id?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          slug: string | null
+          status: string
+          totalPrice: number
+          user: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          slug?: string | null
+          status: string
+          totalPrice: number
+          user: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          slug?: string | null
+          status?: string
+          totalPrice?: number
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product: {
         Row: {
           category: number

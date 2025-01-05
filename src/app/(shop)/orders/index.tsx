@@ -1,23 +1,38 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import { ORDERS } from '../../../../assets/orders'
-import { Link } from 'expo-router'
+import { ActivityIndicator, FlatList, ImageStyle, Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import { Link, Redirect } from 'expo-router'
+import { getMyOrders } from '../../../actions/order'
+import { Tables } from '../../../types/supabase.types'
+import { format } from 'date-fns'
 
 const Orders = () => {
+  const { data: orders, isLoading, error } = getMyOrders()
+  if (error) return <Text>error:{error.message}</Text>
+  if (isLoading) return <ActivityIndicator />
+  if (!orders?.length) {
+    return <Text style={{
+      fontSize: 20,
+       textAlign: 'center',
+       marginTop:10,
+       }}>No Orders Created Yet</Text>
+  }
   return (
     <View style={styles.container}>
       <FlatList
-        data={ORDERS}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) =>
+        data={orders}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }: { item: Tables<'orders'> }) =>
           <Link href={`/orders/${item.slug}`} asChild>
             <Pressable style={styles.orderContainer}>
               <View style={styles.orderContent}>
                 <View style={styles.orderDetailsContainer}>
-                  <Text style={styles.orderItem}>{item.item}</Text>
-                  <Text style={styles.orderDetails}>{item.details}</Text>
-                  <Text style={styles.orderDate}>{item.date}</Text>
+                  <Text style={styles.orderItem}>{item.slug}</Text>
+                  <Text style={styles.orderDetails}>{item.description}</Text>
+                  <Text style={styles.orderDate}>
+                    {format(new Date(item.created_at), 'MMM dd, yyyy')}
+                  </Text>
                 </View>
-                <View style={[styles.statusBadge, styles[`statusBadge_${item.status}`]
+                <View style={[styles.statusBadge,
+                styles[`statusBadge_${item.status}`]
                 ]}>
                   <Text style={styles.statusText}>{item.status}</Text>
                 </View>
@@ -32,7 +47,7 @@ const Orders = () => {
 
 export default Orders
 
-const styles = StyleSheet.create({
+const styles: { [key: string]: ViewStyle | TextStyle | ImageStyle } = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,

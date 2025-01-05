@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { PRODUCTS } from '../../assets/products'
+import { useProductStore } from './product'
 
 export type CartItemType = {
   id: number
@@ -25,14 +25,12 @@ export const useCartStore = create<CartState>((set, get) => ({
     const existingItem = get().items.find(i => i.id === item.id)
     if (existingItem) {
       set(state => ({
-        items: state.items.map(i =>
-          i.id === item.id
-            ? {
-                ...i,
-                qty:item.qty
-              }
-            : i
-        )
+        items: state.items.map(i => {
+          return {
+            ...i,
+            qty: item.qty
+          }
+        })
       }))
     } else {
       set(state => ({
@@ -46,22 +44,20 @@ export const useCartStore = create<CartState>((set, get) => ({
     }))
   },
   incrementItem: (id: number) => {
-    console.log(id);
-
+    const products = useProductStore.getState().storeProducts
     set(state => {
-      const product = PRODUCTS.find(p => p.id === id)
+      const product = products.find(p => p.id === id)
       if (!product) return state
       return {
         items: state.items.map(i =>
           i.id == id && i.qty < product.maxQty
             ? {
                 ...i,
-                qty: i.qty+1
+                qty: i.qty + 1
               }
             : i
         )
       }
-
     })
   },
   decrementItem: (id: number) => {

@@ -21,9 +21,11 @@ export default function Cart() {
     onIncrement: (id: number) => void;
     onDecrement: (id: number) => void;
   }
-  const CartItem = ({ item, onRemove, onIncrement, onDecrement }: CartItemProps) => {
+  const CartItem = ({ item, onRemove, onIncrement, onDecrement }:
+    CartItemProps) => {
+
     return <View style={styles.cartItem}>
-      <Image source={item.image} style={styles.itemImage} />
+      <Image source={{ uri: item.image }} style={styles.itemImage} />
       <View style={styles.itemDetails}>
         <Text style={styles.itemTitle}>{item.title}</Text>
         <Text style={styles.itemPrice}>{item.price.toFixed(2)}</Text>
@@ -43,7 +45,7 @@ export default function Cart() {
       </View>
       <TouchableOpacity
         style={styles.removeButton}
-        onPress={() =>onRemove(item.id)}
+        onPress={() => onRemove(item.id)}
       >
         <Text style={styles.removeButtonText}>Remove</Text>
       </TouchableOpacity>

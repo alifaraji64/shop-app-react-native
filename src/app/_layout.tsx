@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Button } from 'react-native'
 import { Stack } from 'expo-router'
 import { ToastProvider } from 'react-native-toast-notifications'
 import AuthProvider from './providers/auth-provider'
@@ -33,7 +33,9 @@ const RootLayout = () => {
                         />
                         <Stack.Screen
                             name='404'
-                            options={{ headerShown: true }}
+                            options={{
+                                headerShown: true
+                            }}
                         />
                     </Stack>
                 </QueryProvider>

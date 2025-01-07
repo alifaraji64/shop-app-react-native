@@ -1,11 +1,31 @@
 import { Image, Alert, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useCartStore } from '../store/cart-store'
 import { StatusBar } from 'expo-status-bar';
+import { createOrder, createOrderItem } from '../actions/order';
 
 export default function Cart() {
-  const { items, removeItem, incrementItem, decrementItem, getTotalPrice } = useCartStore();
-  const handleCheckout = () => {
-    Alert.alert('proceeding to checkout', `total amount: $ ${getTotalPrice()}`)
+  const { items,
+    removeItem,
+    incrementItem,
+    decrementItem,
+    getTotalPrice } = useCartStore();
+
+  const { mutateAsync: createSupabaseOrder } = createOrder()
+  const { mutateAsync: createSupabaseOrderItem } = createOrderItem()
+  const handleCheckout = async () => {
+    await createSupabaseOrder
+      (
+        { totalPrice: parseFloat(getTotalPrice()) },
+        {
+          onSuccess: (data) => {
+            console.log('newly created order');
+
+            console.log(data);
+            //createSupabaseOrderItem([])
+
+          }
+        }
+      )
   }
 
   type CartItemType = {

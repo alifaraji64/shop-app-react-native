@@ -10,7 +10,7 @@ export default function ProductDetails() {
     const { slug } = useLocalSearchParams<{ slug: string }>();
     const toast = useToast();
     const { getProducts } = useProductStore()
-    const products= getProducts();
+    const products = getProducts();
 
 
 
@@ -23,7 +23,7 @@ export default function ProductDetails() {
     //if that item is already in the cart we will show the qty of it from the store
     //but if it is not in the cart then the qty will be 1
     const cartItem = items.find(item => item.id === product.id)
-    const [qty, setQty] = useState(cartItem ? cartItem.qty : 1);
+    const [qty, setQty] = useState(cartItem ? cartItem.qty : product.maxQty == 0 ? 0 : 1);
     const totalPrice = (product.price * qty).toFixed(2)
     const increaseQty = () => {
         if (qty < product.maxQty) setQty(qty + 1)
@@ -63,7 +63,7 @@ export default function ProductDetails() {
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: slug, headerTitleAlign: 'center' }} />
-            <Image style={styles.heroImage} source={{uri:product.heroImage}} />
+            <Image style={styles.heroImage} source={{ uri: product.heroImage }} />
             <View style={{ flex: 1, padding: 12 }}>
                 <Text>Title: {product.title}</Text>
                 <Text>Slug: {slug}</Text>
@@ -74,7 +74,7 @@ export default function ProductDetails() {
                 <FlatList
                     data={product.imagesUrl}
                     renderItem={({ item }) => <Image
-                        source={{uri:item}}
+                        source={{ uri: item }}
                         style={styles.image}
                     />
                     }
@@ -110,7 +110,10 @@ export default function ProductDetails() {
                         style={[
                             styles.addToCartButton,
                             { opacity: qty === 0 ? 0.5 : 1 }
-                        ]}>
+                        ]}
+                        disabled={product.maxQty == 0}
+                    >
+
                         <Text style={styles.addToCartText}>Add to Cart</Text>
                     </TouchableOpacity>
                 </View>

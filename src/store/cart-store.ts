@@ -16,6 +16,7 @@ type CartState = {
   decrementItem: (id: number) => void
   getTotalPrice: () => string
   getItemCount: () => number
+  clearItems: () => void
 }
 
 const initialCartItems: CartItemType[] = []
@@ -52,9 +53,9 @@ export const useCartStore = create<CartState>((set, get) => ({
         items: state.items.map(i =>
           i.id == id && i.qty < product.maxQty
             ? {
-                ...i,
-                qty: i.qty + 1
-              }
+              ...i,
+              qty: i.qty + 1
+            }
             : i
         )
       }
@@ -76,5 +77,10 @@ export const useCartStore = create<CartState>((set, get) => ({
   getItemCount: () => {
     const { items } = get()
     return items.reduce((count, item) => count + item.qty, 0)
+  },
+  clearItems: () => {
+    set(state => {
+      return { items: [] }
+    })
   }
 }))

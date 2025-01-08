@@ -2,13 +2,18 @@ import { Image, Alert, FlatList, Platform, StyleSheet, Text, TouchableOpacity, V
 import { useCartStore } from '../store/cart-store'
 import { StatusBar } from 'expo-status-bar';
 import { createOrder, createOrderItem } from '../actions/order';
+import { useToast } from 'react-native-toast-notifications';
+import { Redirect, useRouter } from 'expo-router';
 
 export default function Cart() {
+  const router = useRouter()
+
+  const toast = useToast()
   const { items,
     removeItem,
     incrementItem,
     decrementItem,
-    getTotalPrice } = useCartStore();
+    getTotalPrice, clearItems } = useCartStore();
 
   const { mutateAsync: createSupabaseOrder } = createOrder()
   const { mutateAsync: createSupabaseOrderItem } = createOrderItem()
@@ -17,11 +22,28 @@ export default function Cart() {
       (
         { totalPrice: parseFloat(getTotalPrice()) },
         {
-          onSuccess: (data) => {
+          onSuccess: async (data) => {
             console.log('newly created order');
 
             console.log(data);
-            //createSupabaseOrderItem([])
+            await createSupabaseOrderItem(
+              items.map(item => ({
+                orderId: data!.id,
+                productId: item.id,
+                quantity: item.qty
+              }
+              )
+              ), {
+              onSuccess: (data) => {
+                console.log('order item created');
+                console.log(data);
+                clearItems();
+                toast.show('saved card items successfully',
+                  { type: 'success', placement: 'top' })
+                  router.replace('/')
+              }
+            }
+            )
 
           }
         }

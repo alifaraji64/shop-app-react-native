@@ -47,8 +47,8 @@ export const createOrder = () => {
         totalPrice,
         user: id
       } as Tables<'orders'>)
-      .select()
-      .single()
+        .select()
+        .single()
       if (error) {
         throw new Error('error fetching the orders' + error.message)
       }
@@ -62,13 +62,13 @@ export const createOrder = () => {
 
 export const createOrderItem = () => {
   return useMutation({
-    mutationFn: async(
+    mutationFn: async (
       items: {
         orderId: number
         productId: number
         quantity: number
       }[]
-    ) =>{
+    ) => {
       const { data, error } = await supabase
         .from('order_items')
         .insert(
@@ -78,11 +78,41 @@ export const createOrderItem = () => {
             quantity
           }))
         )
-        .select('*, products:product(*)')
+        .select('*, product:product(*)')
       if (error) {
         throw new Error('error fetching the orders' + error.message)
       }
       return data
+    }
+  })
+}
+
+export const getOneOrder = ({ slug }: { slug: string }) => {
+
+  return useQuery({
+    queryKey: ['oneOrder', 'k'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('slug', slug)
+        .single()
+      if (error) throw new Error('error fetching the orders' + error.message)
+      return data;
+    }
+  })
+}
+
+export const getProductsForOrder =  ({ order_id }: { order_id: string }) => {
+  return useQuery({
+    queryKey: ['productsForOrder', order_id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('order_items')
+        .select('*, product:product(*)')
+        .eq('order_id', order_id)
+      if (error) throw new Error('error fetching the product for order' + error.message)
+      return data;
     }
   })
 }

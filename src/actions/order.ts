@@ -41,12 +41,14 @@ export const createOrder = () => {
     }: {
       totalPrice: number
     }): Promise<Tables<'orders'> | null> => {
-      const { data, error } = await supabase.from('orders').insert({
-        slug: generateOrderSlug(),
-        status: 'Pending',
-        totalPrice,
-        user: id
-      } as Tables<'orders'>)
+      const { data, error } = await supabase
+        .from('orders')
+        .insert({
+          slug: generateOrderSlug(),
+          status: 'Pending',
+          totalPrice,
+          user: id
+        } as Tables<'orders'>)
         .select()
         .single()
       if (error) {
@@ -79,7 +81,7 @@ export const createOrderItem = () => {
           }))
         )
         .select('*, product:product(*)')
-      if (error) {
+      if (error || !data) {
         throw new Error('error fetching the orders' + error.message)
       }
       return data
@@ -87,32 +89,18 @@ export const createOrderItem = () => {
   })
 }
 
-export const getOneOrder = ({ slug }: { slug: string }) => {
-
+export const getOrderAndProducts = ({ slug }: { slug: string }) => {
   return useQuery({
-    queryKey: ['oneOrder', 'k'],
+    queryKey: ['productsForOrder', slug],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select('*,order_items(products:product(*))')
         .eq('slug', slug)
         .single()
-      if (error) throw new Error('error fetching the orders' + error.message)
-      return data;
-    }
-  })
-}
-
-export const getProductsForOrder =  ({ order_id }: { order_id: string }) => {
-  return useQuery({
-    queryKey: ['productsForOrder', order_id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('order_items')
-        .select('*, product:product(*)')
-        .eq('order_id', order_id)
-      if (error) throw new Error('error fetching the product for order' + error.message)
-      return data;
+      if (error || !data)
+        throw new Error('error fetching the product for order' + error.message)
+      return data
     }
   })
 }

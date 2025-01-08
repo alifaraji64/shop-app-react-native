@@ -1,36 +1,37 @@
 import { Redirect, Stack, useLocalSearchParams } from 'expo-router'
-import { FlatList, StyleSheet, Text, View, Image, ViewStyle, TextStyle, ImageStyle } from 'react-native'
-import { getOneOrder, getProductsForOrder } from '../../../actions/order';
+import { FlatList, StyleSheet, Text, View, Image, ViewStyle, TextStyle, ImageStyle, ActivityIndicator } from 'react-native'
+import { getOrderAndProducts } from '../../../actions/order';
+import { format } from 'date-fns'
 export default function orderDetail() {
     const { slug } = useLocalSearchParams<{ slug: string }>();
-    const { data: order, isLoading, error } = getOneOrder({ slug })
-    console.log('wooo');
-    console.log(order);
+    const { data: order, error, isLoading } = getOrderAndProducts({ slug })
+    if (isLoading) return <ActivityIndicator />
 
-    //const order = ORDERS.find(order => order.slug === slug)
-    if (!order) return <Redirect href={'/404'} />
-    const { data } = getProductsForOrder({ order_id: order.id.toString() })
-    const products = data?.map(i=>i.product)
-    console.log('bunnn');
-    
-    console.log(products);
-    
+
+
+
+    if (!order || error) return <Text>error: {error?.message}</Text>
+    const products = order.order_items.map(i => i.products)
+
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: order.slug! }} />
-            {/* <Text style={styles.item}>{order.item}</Text> */}
+            <Text style={styles.item}>{order.slug}</Text>
             <Text style={styles.details}>{order.description}</Text>
             <View style={[styles.statusBadge, styles[`statusBadge_${order.status}`]]}>
                 <Text style={styles.statusText}>{order.status}</Text>
             </View>
-            <Text style={styles.date}>{order.created_at}</Text>
+            <Text style={styles.date}>
+                {format(new Date(order.created_at), 'MMM dd, yyyy')}
+            </Text>
+
             <Text style={styles.itemsTitle}>Items Ordered:</Text>
             <FlatList
                 data={products}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.orderItem}>
-                        <Image style={styles.heroImage} source={{uri:item.heroImage}} />
+                        <Image style={styles.heroImage} source={{ uri: item.heroImage }} />
                         <View>
                             <Text style={styles.itemsTitle}>{item.title}</Text>
                             <Text style={styles.itemPrice}>Price: {item.price}</Text>
@@ -46,7 +47,7 @@ const styles: { [key: string]: any } = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: '#fff',
+        backgroundColor: '#fff'
     },
     item: {
         fontSize: 24,
@@ -60,7 +61,8 @@ const styles: { [key: string]: any } = StyleSheet.create({
     statusBadge: {
         padding: 8,
         borderRadius: 4,
-        alignSelf: 'flex-start',
+        alignSelf:'flex-start'
+
     },
     statusBadge_Pending: {
         backgroundColor: 'orange',
@@ -81,7 +83,7 @@ const styles: { [key: string]: any } = StyleSheet.create({
     date: {
         fontSize: 14,
         color: '#555',
-        marginTop: 16,
+        marginTop: 16
     },
     itemsTitle: {
         fontSize: 18,

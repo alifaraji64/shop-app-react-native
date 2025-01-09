@@ -1,3 +1,6 @@
+import { QueryData } from "@supabase/supabase-js"
+import { createClient } from "../supabase/client"
+
 export type Product = {
   created_at: string
   id: number
@@ -27,4 +30,15 @@ export type Category = {
   slug: string
   products: Product[] | null
 }
+
 export const validImageTypes = ['image/png', 'image/jpeg']
+
+const supabase = createClient();
+const ordersWithProductsQuery = supabase
+  .from('orders')
+  .select(`*, 
+order_items:order_items(*,product:product(*))
+, user:user(*)`)
+  .order('created_at', { ascending: false })
+
+export type OrdersWithProducts = QueryData<typeof ordersWithProductsQuery>

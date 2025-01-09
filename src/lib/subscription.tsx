@@ -11,14 +11,15 @@ export const useOrderSubscription = () => {
                 { event: 'UPDATE', schema: 'public', table: 'orders' },
                 (payload) => {
                     console.log('Change received!', payload.new)
-                    queryClient.invalidateQueries({ queryKey: ['orders', 'productsForOrder'] })
+                    queryClient.invalidateQueries({ queryKey: ['orders'] })
+                    queryClient.invalidateQueries({ queryKey: ['productsForOrder'] })
                 }
             )
             .subscribe()
 
-            return()=>{
-                channels.unsubscribe()
-            }
+        return () => {
+            channels.unsubscribe()
+        }
     }, [])
 
 }
